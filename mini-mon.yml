@@ -4,7 +4,13 @@
   pre_tasks:
     - name: apt-get update
       apt: update_cache=yes
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
     - name: Install virtualenv
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
       apt: name=python-virtualenv
   tasks:
     - name: Install postfix, needed by notification engine
