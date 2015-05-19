@@ -1,0 +1,13 @@
+[Unit]
+Description=Monasca Notification
+After=kafka.service postfix.service
+
+[Service]
+Type=simple
+User={{ notification_user }}
+Group={{ monasca_group }}
+Restart=always
+ExecStart={{ monasca_virtualenv_dir }}/bin/monasca-notification
+
+[Install]
+WantedBy=multi-user.target

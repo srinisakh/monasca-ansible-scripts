@@ -29,6 +29,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ds.vm.hostname = "devstack"
     ds.vm.box = "monasca/devstack"
     ds.vm.network :private_network, ip: "192.168.10.5"
+    ds.vm.network "forwarded_port", guest: 5000, host: 5001
+    ds.vm.network "forwarded_port", guest: 22, host: 2002
     ds.vm.provider "virtualbox" do |vb|
       vb.memory = 7168
       vb.cpus = 4
@@ -44,6 +46,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     mm.vm.hostname = 'mini-mon'
     mm.vm.box = "ubuntu/trusty64"
     mm.vm.network :private_network, ip: "192.168.10.4"
+    mm.vm.network "forwarded_port", guest: 8080, host: 8080
+    mm.vm.network "forwarded_port", guest: 22, host: 2112
     mm.vm.provider "virtualbox" do |vb|
       vb.memory = 6144
       vb.cpus = 4

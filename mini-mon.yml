@@ -9,17 +9,28 @@
   tasks:
     - name: Install postfix, needed by notification engine
       apt: name=postfix state=present
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
     - name: Install pip from apt
       apt: name=python-pip state=present
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
     - name: pip upgrade pip
       pip: name=pip state=latest
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
     - name: Install python-dev
       apt: name=python-dev state=present
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
   roles:
     - {role: zookeeper, tags: [zookeeper]}
     - {role: kafka, tags: [kafka]}
     - {role: influxdb, tags: [influxdb]}
-    - {role: percona, tags: [mysql, percona]}
 
 - name: Sets up schema and install Monasca apps
   hosts: mini-mon
@@ -34,7 +45,7 @@
           ping_timeout: 1
         instances:
           - name: devstack
-            host_name: 192.168.10.5
+            host_name: 127.0.0.1
             alive_test: ssh
   tasks:
     - name: Setup the monasca cli credentials in the default environment
@@ -43,6 +54,9 @@
         - cli
     - name: Update cli
       pip: name=python-monascaclient state=latest virtualenv="{{monasca_virtualenv_dir}}"
+      environment:
+        http_proxy: http://web-proxy.fc.hp.com:8080
+        https_proxy: http://web-proxy.fc.hp.com:8080
       tags:
         - cli
   roles:

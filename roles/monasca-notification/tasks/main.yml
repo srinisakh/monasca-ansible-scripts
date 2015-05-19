@@ -1,0 +1,65 @@
+---
+- name: setup group
+  group: name={{monasca_group}} system=yes
+
+- name: Setup user
+  user: name={{notification_user}} system=yes group={{monasca_group}}
+
+- name: Install deps to avoid pip doing compilation
+  apt: name={{item}} state=present
+  with_items: dependencies
+  when: not skip_install
+
+- include: pip_index.yml
+  when: not skip_install
+
+- name: pip install monasca-notification
+  pip: name=monasca-notification state=latest virtualenv="{{monasca_virtualenv_dir}}"
+  environment:
+    http_proxy: http://web-proxy.fc.hp.com:8080
+    https_proxy: http://web-proxy.fc.hp.com:8080
+  notify:
+    - restart monasca-notification
+  when: not skip_install
+
+- name: create monasca log dir
+  file: path={{monasca_log_dir}} state=directory owner=root group={{monasca_group}} mode=775
+
+- name: create notification log dir
+  file: path={{notification_log_dir}} state=directory owner=root group={{monasca_group}} mode=775
+
+- name: create conf dir
+  file: path={{monasca_conf_dir}} state=directory owner=root group={{monasca_group}} mode=775
+
+- name: create conf file from template
+  template: dest="{{monasca_conf_dir}}/notification.yaml" owner={{notification_user}} group={{monasca_group}} mode=640 src=notification.yaml.j2
+  notify:
+    - restart monasca-notification
+
+- name: Detect if this is a systemd based system
+  command: cat /proc/1/comm
+  register: init
+- set_fact: use_systemd=True
+  when: init.stdout == 'systemd'
+- set_fact: use_systemd=False
+  when: init.stdout != 'systemd'
+
+- name: create upstart script
+  template: dest={{notification_upstart_conf}} owner=root group=root mode=644 src=monasca-notification.conf.j2
+  notify:
+    - restart monasca-notification
+  when: not use_systemd
+
+- name: create systemd config
+  template: dest={{notification_systemd_service}} owner=root group=root mode=644 src=monasca-notification.service.j2
+  notify:
+    - restart monasca-notification
+  when: use_systemd
+
+- command: systemctl daemon-reload
+  when: use_systemd
+
+- meta: flush_handlers
+
+- name: Enable monasca-notification
+  service: name=monasca-notification state=started enabled=yes

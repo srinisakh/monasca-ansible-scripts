@@ -1,0 +1,40 @@
+---
+- name: create jar_dir
+  file: path={{monasca_jar_dir}} state=directory owner=root group=root mode=755
+
+- name: Fetch persister jar
+  get_url: dest={{monasca_jar_dir}}/monasca-persister.jar url="{{persister_tarball_base_url}}/monasca-persister-{{persister_version}}-shaded.jar" force=yes
+  environment:
+    http_proxy: http://web-proxy.fc.hp.com:8080
+    https_proxy: http://web-proxy.fc.hp.com:8080
+  notify:
+    - restart monasca-persister
+  when: not skip_install
+
+- name: create conf_dir
+  file: path={{monasca_conf_dir}} state=directory owner=root group={{monasca_group}} mode=775
+
+- name: create conf_file from template
+  template: dest={{persister_java_conf_file}} owner={{persister_user}} group={{monasca_group}} mode=640 src=persister-config.yml.j2
+  notify:
+    - restart monasca-persister
+
+- name: create systemd startup script from template
+  template: dest={{persister_systemd_service}} owner=root group=root mode=644 src=monasca-persister-java.service.j2
+  notify:
+    - restart monasca-persister
+  when: use_systemd
+
+- command: systemctl daemon-reload
+  when: use_systemd
+
+- name: create upstart script from template
+  template: dest=/etc/init/monasca-persister.conf owner=root group=root mode=744 src=monasca-persister-java.conf.j2
+  notify:
+    - restart monasca-persister
+  when: not use_systemd
+
+- meta: flush_handlers
+
+- name: Enable monasca-persister
+  service: name=monasca-persister state=started enabled=yes

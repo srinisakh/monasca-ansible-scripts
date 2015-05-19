@@ -1,0 +1,31 @@
+- name: Create Monasca Alarm Definitions
+  monasca_alarm_definition:
+    name: "{{item.name}}"
+    description: "{{item.description | default('') }}"
+    expression: "{{item.expression}}"
+    keystone_token: "{{default_notification.keystone_token}}"
+    match_by: "{{item.match_by | default(['hostname']) }}"
+    monasca_api_url: "{{default_notification.monasca_api_url}}"
+    severity: "{{item.severity | default('LOW') }}"
+    alarm_actions:
+      - "{{default_notification.notification_method_id}}"
+    ok_actions:
+      - "{{default_notification.notification_method_id}}"
+    undetermined_actions:
+      - "{{default_notification.notification_method_id}}"
+  with_items:
+    - { name: "Kafka Consumer Lag",
+        description: "The specified consumer_group is not keeping up with messages flowing through kafka",
+        severity: "MEDIUM",
+        expression: "avg(kafka.consumer_lag) > 100 times 3",
+        match_by: ["consumer_group", "hostname"] }
+    - { name: "Monasca Agent emit time", description: "Time agent takes to send metrics to the api", expression: "avg(monasca.emit_time_sec) > 2 times 3" }
+    - { name: "Monasca Agent collection time", description: "Time agent takes to collect metrics", expression: "avg(monasca.collection_time_sec) > 5 times 3" }
+    - { name: "Monasca Notification Configuration DB query time",
+        description: "Time for notification engine queries to the mysql config db",
+        expression: "avg(monasca.config_db_time.95percentile) > 5 times 3" }
+    - { name: "Monasca Notification email time",
+        description: "Time taken to email notifications",
+        expression: "avg(monasca.email_time.95percentile) > 2 times 3" }
+    - { name: "Zookeeper Average Latency", expression: "avg(zookeeper.avg_latency_sec) > 1 times 3" }
+    - { name: "Zookeeper Connections Count", expression: "zookeeper.connections_count < 5" }

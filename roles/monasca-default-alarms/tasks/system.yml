@@ -1,0 +1,28 @@
+- name: Create System Alarm Definitions
+  monasca_alarm_definition:
+    name: "{{item.name}}"
+    description: "{{item.description | default('') }}"
+    expression: "{{item.expression}}"
+    keystone_token: "{{default_notification.keystone_token}}"
+    match_by: "{{item.match_by | default(['hostname']) }}"
+    monasca_api_url: "{{default_notification.monasca_api_url}}"
+    severity: "{{item.severity | default('LOW') }}"
+    alarm_actions:
+      - "{{default_notification.notification_method_id}}"
+    ok_actions:
+      - "{{default_notification.notification_method_id}}"
+    undetermined_actions:
+      - "{{default_notification.notification_method_id}}"
+  with_items:
+    - { name: "Host Alive Alarm", severity: "HIGH", expression: "host_alive_status > 0"}
+    - { name: "Http Status Alarm", severity: "HIGH", expression: "http_status > 0", match_by: ["service", "component", "hostname"] }
+    - { name: "High CPU usage", expression: "avg(cpu.idle_perc) < 10 times 3" }
+    - { name: "Disk Inode Usage", expression: "disk.inode_used_perc > 90", match_by: ["hostname", "device"] }
+    - { name: "Disk Usage", expression: "disk.space_used_perc > 90", match_by: ["hostname", "device"] }
+    - { name: "Memory usage", severity: "MEDIUM", expression: "avg(mem.usable_perc) < 10 times 3" }
+    - { name: "Network Errors", severity: "MEDIUM", expression: "net.in_errors > 5 or net.out_errors > 5" }
+    - { name: "Process not found",
+        description: "No pids found for the process_name",
+        severity: "HIGH",
+        expression: "process.pid_count < 1",
+        match_by: ["process_name", "hostname"] }

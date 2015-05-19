@@ -1,0 +1,3 @@
+---
+- name: restart monasca-notification
+  service: name=monasca-notification state=restarted enabled=yes

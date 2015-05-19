@@ -1,0 +1,20 @@
+---
+alarm_topic: alarm-state-transitions
+email_from_address: hpcs.mon@hp.com
+notification_kafka_group: monasca-notification
+notification_topic: alarm-notifications
+notification_retry_topic: retry-notifications
+retry_interval: 30
+retry_max_attempts: 5
+zookeeper_notification_path: /notification/alarms
+zookeeper_notification_retry_path: /notification/retry
+monasca_conf_dir: /etc/monasca
+monasca_log_dir: /var/log/monasca
+pip_conf_dir: ~/.pip
+mysql_db: mon
+smtp_timeout: 15
+smtp_user: ""
+smtp_password: ""
+
+monasca_virtualenv_dir: /opt/monasca
+skip_install: False

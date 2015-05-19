@@ -1,6 +1,6 @@
 ---
-devstack: 192.168.10.5
-mini_mon: 192.168.10.4
+devstack: 127.0.0.1
+mini_mon: 127.0.0.1
 
 keystone_url: "http://{{devstack}}:35357/v3"
 monasca_api_host: "{{mini_mon}}"
@@ -8,7 +8,7 @@ monasca_api_url: http://{{ monasca_api_host }}:8080/v2.0
 monasca_agent_check_frequency: 15
 monasca_virtualenv_dir: /opt/monasca
 
-keystone_admin_token: ADMIN
+keystone_admin_token: password
 monasca_agent_user: monasca-agent
 monasca_agent_password: password
 monasca_agent_project: mini-mon

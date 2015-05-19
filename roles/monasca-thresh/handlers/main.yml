@@ -1,0 +1,3 @@
+---
+- name: restart monasca-thresh
+  service: name=monasca-thresh state=restarted enabled=yes

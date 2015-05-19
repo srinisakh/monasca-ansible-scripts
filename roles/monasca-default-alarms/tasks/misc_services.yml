@@ -1,0 +1,33 @@
+- name: Alarms for various common services
+  monasca_alarm_definition:
+    name: "{{item.name}}"
+    description: "{{item.description | default('') }}"
+    expression: "{{item.expression}}"
+    keystone_token: "{{default_notification.keystone_token}}"
+    match_by: "{{item.match_by | default(['hostname']) }}"
+    monasca_api_url: "{{default_notification.monasca_api_url}}"
+    severity: "{{item.severity | default('LOW') }}"
+    alarm_actions:
+      - "{{default_notification.notification_method_id}}"
+    ok_actions:
+      - "{{default_notification.notification_method_id}}"
+    undetermined_actions:
+      - "{{default_notification.notification_method_id}}"
+  with_items:
+    - { name: "Rabbitmq Queue Depth",
+        description: "Alarm on many messages in the queue",
+        expression: "avg(rabbitmq.queue.messages) > 10 times 3",
+        severity: "MEDIUM",
+        match_by: [queue, hostname]}
+    - { name: "Mysql Slow queries",
+        description: "Alert when many slow queries are reported",
+        expression: "avg(mysql.performance.slow_queries) > 10 times 3"}
+    - { name: "Apache status",
+        description: "Alarms on failure to reach the Apache status url",
+        expression: "apache.status > 0",
+        severity: "HIGH"}
+    - { name: "Apache no idle workers",
+        description: "Alarms when there are no idle apache workers",
+        expression: "avg(apache.performance.idle_worker_count) < 1 times 3",
+        severity: "MEDIUM"}
+    - { name: "NTP time sync", description: "Alarms when ntp falls 5 seconds out of sync", expression: "ntp.offset > 5 or ntp.offset < -5"}
