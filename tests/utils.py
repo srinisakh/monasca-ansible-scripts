@@ -16,7 +16,7 @@ from monasca_agent.common.keystone import Keystone
 OS_USERNAME = 'mini-mon'
 OS_PASSWORD = 'password'
 OS_PROJECT_NAME = 'mini-mon'
-OS_AUTH_URL = 'http://192.168.10.5:35357/v3/'
+OS_AUTH_URL = 'http://127.0.0.1:35357/v3/'
 
 
 def check_alarm_history(alarm_id, states):
@@ -78,7 +78,7 @@ def get_api_host():
     if os.path.isfile('/etc/mon/mon-api-config.yml'):
         return 'localhost'
     else:
-        return '192.168.10.4'
+        return '127.0.0.1'
 
 
 def set_if_not_env(name, default):

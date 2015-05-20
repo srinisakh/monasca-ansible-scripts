@@ -1,11 +1,17 @@
 ---
 - name: Install deps to avoid pip doing compilation or enable it
   apt: name={{item}} state=present
+  environment:
+    http_proxy: http://web-proxy.fc.hp.com:8080
+    https_proxy: http://web-proxy.fc.hp.com:8080
   with_items: dependencies
   when: not skip_install
 
 - name: Keystone User - Install dependencies
   pip: name=python-keystoneclient state=present virtualenv="{{monasca_virtualenv_dir}}"
+  environment:
+    http_proxy: http://web-proxy.fc.hp.com:8080
+    https_proxy: http://web-proxy.fc.hp.com:8080
   when: not skip_install
 
 # These tasks need a Keystone v2 endpoint

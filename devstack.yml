@@ -36,7 +36,7 @@
       tags:
         - cli
   roles:
-    - {role: monasca-ui, tags: [ui]}
+    # - {role: monasca-ui, tags: [ui]}
     - {role: monasca-keystone, tags: [devstack, keystone]}
-    - {role: monasca-devstack, tags: [devstack]}
+    # - {role: monasca-devstack, tags: [devstack]}
     - {role: monasca-agent, tags: [agent]}
