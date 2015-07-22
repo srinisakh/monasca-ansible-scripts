@@ -1,0 +1,30 @@
+Ansible version > 1.8 recommended
+$ ansible --version
+ansible 1.9.1
+  configured module search path = None
+ 
+
+Download ansible script repo
+git clone git@gitlab.gozer.hpcloud.net:mnb-ceilometer/monasca-ansible-scripts.git
+
+Install ansible
+sudo apt-get install ansible
+
+Edit /etc/hosts add following line
+127.0.0.1       devstack mini-mon localhost
+
+Required in case of using password access to SSH 
+sudo apt-get install sshpass
+
+Run the playbook for devstack – DIDNT work _ DON"T USE
+ansible-playbook -u metering --sudo --ask-sudo-pass -k -i ../inventory_devstack ds-build.yml
+
+Run the minified devstack - removed monasca-ui and monasca-devstack roles from it
+ansible-playbook -u metering --sudo --ask-sudo-pass -k -i inventory_devstack devstack.yml
+
+Run mini-mon to setup monasca
+ansible-playbook -u metering --sudo --ask-sudo-pass -k -i inventory_minimon mini-mon.yml
+
+Kafka troubleshooting
+When restarting kafka also restart zookeeper
+
