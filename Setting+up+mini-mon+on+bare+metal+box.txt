@@ -5,7 +5,7 @@ ansible 1.9.1
  
 
 Download ansible script repo
-git clone git@gitlab.gozer.hpcloud.net:mnb-ceilometer/monasca-ansible-scripts.git
+git clone https://github.com/srsakhamuri/monasca-ansible-scripts.git
 
 Install ansible
 sudo apt-get install ansible
