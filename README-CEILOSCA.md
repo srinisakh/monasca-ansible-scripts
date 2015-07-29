@@ -1,4 +1,4 @@
-etup devstack
+### Setup devstack
  
 Setup devstack on the machine as you normally do using information from http://docs.openstack.org/developer/devstack/
 
