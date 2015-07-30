@@ -4,7 +4,7 @@ Setup devstack on the machine as you normally do using information from http://d
 
 ### Download ansible script repo
 
-	git clone git@gitlab.gozer.hpcloud.net:mnb-ceilometer/monasca-ansible-scripts.git
+	git clone https://github.com/srsakhamuri/monasca-ansible-scripts.git
 
 **Install ansible**
 	
