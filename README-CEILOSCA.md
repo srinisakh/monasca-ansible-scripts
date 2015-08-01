@@ -54,6 +54,12 @@ try running the below commands as SUDO
 	TASK: [monasca-keystone | Keystone Service - Execute the script] **************
  
 	Edit keystone_admin_token in group_vars/all to supply the correct token value
+	
+**Enable password authentication**
+
+	edit /etc/ssh/sshd_config 
+	set PasswordAuthentication yes
+
 
 ### Kafka troubleshooting
 When restarting kafka also restart zookeeper
