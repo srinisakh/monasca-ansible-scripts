@@ -59,6 +59,7 @@ try running the below commands as SUDO
 
 	edit /etc/ssh/sshd_config 
 	set PasswordAuthentication yes
+	restart ssh service
 
 
 ### Kafka troubleshooting
